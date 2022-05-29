@@ -1,6 +1,7 @@
 const {createStudent, getStudent, getStudentById, updateStudent, deleteStudent} = require('../controllers/student.controller');
 
 const authorize = require('../middleware/authorize');
+const checkAdmin = require('../middleware/checkAdmin');
 
 const studentRouter = require('express').Router();
 
@@ -11,7 +12,7 @@ studentRouter.route('/')
 
 studentRouter.route('/:id')
     .get(getStudentById)
-    .put(updateStudent)
-    .delete(deleteStudent)
+    .put([authorize], updateStudent)
+    .delete([authorize, checkAdmin], deleteStudent)
 
 module.exports = {studentRouter}

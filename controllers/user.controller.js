@@ -13,19 +13,21 @@ const createUser = async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.password, salt);
     req.body.password = hashPassword;
 
+    // filtering out 'role' from req body
+    const {role, ...rest} = req.body;
+    req.body = rest;
+
+    // creating a collection from model
     const newUser = UserModel(req.body);
-    console.log('newUser:', newUser);
 
     try {
         const result = await newUser.save();
-        console.log('result:', result);
-        return res.status(200).send('user created successfully');
+        return res.status(200).send({message: 'user created successfully', result});
     } catch (err) {
         return res.status(400).send(err);
     }
 
     console.log('---------------------------')
-
 }
 
 const userLogin = async (req, res) => {
@@ -42,7 +44,6 @@ const userLogin = async (req, res) => {
             }
 
             const jwt = dbUser.genJWT();
-
             return res.status(200).send({user: dbUser, jwt});
         }
 

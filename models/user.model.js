@@ -24,10 +24,16 @@ const userSchema = new Schema({
         minLength: 5,
         maxLength: 1024,
     },
+
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    }
 })
 
 userSchema.methods.genJWT = function () {
-    const token = jwt.sign({id: this._id, name: this.name}, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign({id: this._id, name: this.name, role: this.role}, process.env.JWT_SECRET_KEY);
     return token;
 }
 const UserModel = model("user_Collection", userSchema);

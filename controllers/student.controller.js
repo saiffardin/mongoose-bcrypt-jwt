@@ -3,12 +3,9 @@ const {Student} = require('../models/student.model');
 const createStudent = async (req, res) => {
     const student = new Student(req.body);
 
-    console.log('req.body:', req.body);
-    console.log('-------------------------');
-    console.log('create operation mongoose:', student)
     try {
         const result = await student.save();
-        return res.status(201).send(result);
+        return res.status(201).send({message: 'Student Created', result});
     } catch (error) {
         return res.status(500).send({error})
     }
@@ -38,11 +35,6 @@ const getStudentById = async (req, res) => {
 
 const updateStudent = async (req, res) => {
     try {
-        console.log('--------------------------------');
-        console.log('params:', req.params);
-        console.log('body:', req.body);
-        console.log('--------------------------------');
-
         const {id} = req.params;
 
         const student = await Student.findByIdAndUpdate(id, req.body, {new: true});
@@ -61,9 +53,9 @@ const deleteStudent = async (req, res) => {
         const student = await Student.findByIdAndDelete(id);
         console.log('deleted student:', student);
 
-        res.status(200).send(student);
+        return res.status(200).send({message: 'Delete Successful', student});
     } catch (error) {
-        res.status(500).send({error});
+        return res.status(500).send({error});
     }
 }
 
